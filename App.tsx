@@ -7,6 +7,7 @@ import 'react-native-gesture-handler';
 export default function App() {
   const [value, setValue] = React.useState('');
   const [outcome, setOutcome] = React.useState<onPressReturn | null>(null);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const onPress = (outcome: onPressReturn) => {
     setValue(outcome.phoneNumber);
@@ -16,16 +17,19 @@ export default function App() {
   return (
     <SafeAreaView>
       <PhoneNumberField
+        underlineInput={TextInput}
         onInputChange={onPress}
         value={value}
-        underlineInput={TextInput}
         style={styles.input}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       <View
         style={{
           margin: 20,
           gap: 10,
         }}>
+        <Text>{isFocused ? 'Input is focused' : 'Input is not focused'}</Text>
         <Text>Outcome:{!outcome && <Text>No outcome yet</Text>}</Text>
         {outcome && (
           <View
