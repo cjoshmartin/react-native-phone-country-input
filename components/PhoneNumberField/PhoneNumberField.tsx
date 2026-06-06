@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput } from 'react-native';
 import { getLocales } from 'expo-localization';
 
 import { CountryCode, countryCodeList } from './consts/regions';
@@ -33,16 +33,23 @@ export interface PhoneNumberFieldProps extends React.ComponentProps<typeof TextI
   allowedCountryCodes?: CountryId[] | null;
   disallowedCountryCodes?: CountryId[] | null;
   underlineInput?: React.ReactNode | null;
-  onPress?: (outcome: onPressReturn) => void;
+  onInputChange?: (outcome: onPressReturn) => void;
 }
 
 export default function PhoneNumberField(props: PhoneNumberFieldProps) {
-  const { allowedCountryCodes, disallowedCountryCodes, underlineInput, value, ...textInputProps } =
-    props;
+  const {
+    allowedCountryCodes,
+    disallowedCountryCodes,
+    underlineInput,
+    value,
+    onPress,
+    ...textInputProps
+  } = props;
   const [internalValue, setinternalValue] = useState('');
   const [country, setCountry] = useState<CountryCode | null>(null);
 
   useEffect(() => {
+    console.debug('PhoneNumberField useEffect Firing');
     // onload set the internal value to the prop value if it exists
     if (value) {
       setinternalValue(value);
@@ -151,26 +158,24 @@ export default function PhoneNumberField(props: PhoneNumberFieldProps) {
         const ouputWthOutMask = output.replace(/\D/g, '');
         console.debug(output, ouputWthOutMask);
         setinternalValue(output);
-        if (textInputProps?.onPress) {
-          const correctLength =
-            matchedCountry.code.length + (matchedCountry.mask.split('#').length - 1);
-          textInputProps?.onPress({
+        if (textInputProps?.onInputChange) {
+          const correctLength = (matchedCountry.code + matchedCountry.mask).length;
+          textInputProps?.onInputChange({
             countryDetails: matchedCountry || null,
             phoneNumber: ouputWthOutMask,
-            isValid: !!matchedCountry && cleanedValue.length === correctLength,
+            isValid: !!matchedCountry && cleanedValue.length + 1 === correctLength,
             correctLength,
           });
         }
       } else {
         setinternalValue(cleanedValue);
-        if (textInputProps?.onPress) {
-          const correctLength =
-            (matchedCountry?.code ?? '').length +
-            ((matchedCountry?.mask ?? '').split('#').length - 1);
-          textInputProps.onPress({
+        if (textInputProps?.onInputChange) {
+          const correctLength = ((matchedCountry?.code ?? '') + (matchedCountry?.mask ?? ''))
+            .length;
+          textInputProps.onInputChange({
             countryDetails: matchedCountry || null,
             phoneNumber: cleanedValue,
-            isValid: !!matchedCountry && cleanedValue.length === correctLength,
+            isValid: !!matchedCountry && cleanedValue.length + 1 === correctLength,
             correctLength,
           });
         }
@@ -184,32 +189,10 @@ export default function PhoneNumberField(props: PhoneNumberFieldProps) {
     <View>
       <Input
         {...textInputProps}
-        style={styles.input}
         placeholder={country?.mask.replace('#', '_')}
         value={'+' + internalValue}
         onChangeText={onChangeText}
       />
-
-      <View>
-        {country ? (
-          <View>
-            <Text>Country: {country.name}</Text>
-            <Text>Country Code: {country.code}</Text>
-            <Text>Flag: {country.flag}</Text>
-          </View>
-        ) : (
-          <Text>No country matched</Text>
-        )}
-      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
