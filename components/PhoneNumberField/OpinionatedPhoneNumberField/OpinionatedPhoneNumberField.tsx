@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Modal, Pressable } from 'react-native';
+import { spacing } from '../Styling/Sizing';
 import { onPressReturn, PhoneNumberField, PhoneNumberFieldProps } from '../PhoneNumberField';
 import { CountrySelector } from '../CountrySelector/CountrySelector';
 import { usePhoneFieldState } from '../hooks/UsePhoneFieldState';
@@ -29,6 +30,8 @@ export function OpinionatedPhoneNumberField({
     disallowedCountryCodes,
   });
 
+  // const textInput = useRef(undefined);
+
   useEffect(() => {
     onOutcomeChange(outcome);
   }, [onOutcomeChange, outcome]);
@@ -38,18 +41,26 @@ export function OpinionatedPhoneNumberField({
       style={[
         {
           flexDirection: 'row',
-          gap: 5,
+          gap: spacing[1],
         },
         style,
       ]}>
       <CountrySelector
         value={outcome?.countryDetails}
-        onSelectCountry={props!.onInputChange}
+        onSelectCountry={() => {
+          // textInput?.current?.blur();
+          props!.onInputChange();
+        }}
         underlineButton={underlineButton}
         underlineModal={underlineModal}
         filtedredCountryCodes={filteredCountryCodes}
       />
-      <PhoneNumberField {...props} value={phoneNumber} onChangeText={onChangeText} />
+      <PhoneNumberField
+        // ref={textInput}
+        {...props}
+        value={phoneNumber}
+        onChangeText={onChangeText}
+      />
     </View>
   );
 }

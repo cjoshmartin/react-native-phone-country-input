@@ -1,6 +1,7 @@
 import { CountryId } from 'components/PhoneNumberField/enum/CountryIds';
 import { OpinionatedPhoneNumberField } from 'components/PhoneNumberField/OpinionatedPhoneNumberField/OpinionatedPhoneNumberField';
 import { onPressReturn } from 'components/PhoneNumberField/PhoneNumberField';
+import { spacing, borders } from 'components/PhoneNumberField/Styling/Sizing';
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 
@@ -13,9 +14,9 @@ function StyledTextInput(props: React.ComponentProps<typeof TextInput>) {
       style={[
         {
           flex: 1,
-          borderWidth: 1,
+          borderWidth: borders.DEFAULT,
           borderColor: 'gray',
-          padding: 10,
+          padding: spacing[2.5],
         },
         props.style,
       ]}
@@ -30,9 +31,9 @@ function StyledPhoneButton(props: React.ComponentProps<typeof Pressable>) {
       style={[
         {
           flexDirection: 'row',
-          gap: 5,
-          paddingHorizontal: 5,
-          borderWidth: 1,
+          gap: spacing[1],
+          paddingHorizontal: spacing[1],
+          borderWidth: borders.DEFAULT,
           borderColor: 'gray',
           alignItems: 'center',
         },
@@ -40,6 +41,10 @@ function StyledPhoneButton(props: React.ComponentProps<typeof Pressable>) {
       {props.children}
     </Pressable>
   );
+}
+
+function StyledModal() {
+  return <View></View>;
 }
 
 export default function App() {
@@ -91,16 +96,16 @@ export default function App() {
       />
       <View
         style={{
-          margin: 20,
-          gap: 10,
+          margin: spacing[5],
+          gap: spacing[2.5],
         }}>
         <Text>{isFocused ? 'Input is focused' : 'Input is not focused'}</Text>
         <Text>Outcome:{!outcome && <Text>No outcome yet</Text>}</Text>
         {outcome && (
           <View
             style={{
-              marginLeft: 10,
-              gap: 5,
+              marginLeft: spacing[2.5],
+              gap: spacing[1],
             }}>
             <Text>phoneNumber: {outcome.phoneNumber}</Text>
             <Text>correctLength: {outcome.correctLength}</Text>
@@ -109,7 +114,7 @@ export default function App() {
             </Text>
             <Text>Country Details: {!outcome.countryDetails && <Text>None Found</Text>}</Text>
             {outcome.countryDetails && (
-              <View style={{ marginLeft: 10, gap: 5 }}>
+              <View style={{ marginLeft: spacing[2.5], gap: spacing[1] }}>
                 <Text>flag: {outcome.countryDetails?.flag}</Text>
                 <Text>name: {outcome.countryDetails?.name}</Text>
                 <Text>code: {outcome.countryDetails?.code}</Text>
@@ -126,7 +131,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   input: {
-    margin: 12,
-    padding: 10,
+    margin: spacing[3],
+    padding: spacing[2.5],
   },
 });

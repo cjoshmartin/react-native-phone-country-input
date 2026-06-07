@@ -2,6 +2,7 @@ import type { StaticScreenProps } from '@react-navigation/native';
 import { ScreenContent } from 'components/ScreenContent';
 
 import { StyleSheet, View } from 'react-native';
+import { spacing } from 'components/PhoneNumberField/Styling/Sizing';
 
 type Props = StaticScreenProps<{
   name: string;
@@ -21,6 +22,6 @@ export default function Details({ route }: Props) {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    padding: spacing[6],
   },
 });

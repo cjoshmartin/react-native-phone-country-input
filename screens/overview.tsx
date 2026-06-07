@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScreenContent } from 'components/ScreenContent';
 
 import { StyleSheet, View } from 'react-native';
+import { spacing } from 'components/PhoneNumberField/Styling/Sizing';
 
 import { Button } from '../components/Button';
 
@@ -26,6 +27,6 @@ export default function Overview() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    padding: spacing[6],
   },
 });

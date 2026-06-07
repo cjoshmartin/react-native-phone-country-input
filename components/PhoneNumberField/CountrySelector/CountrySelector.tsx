@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CountryCode } from '../consts/regions';
 import { Modal, Pressable, Text } from 'react-native';
+import { CountrySelectorModal } from './CountrySelectorModal';
 
 // button for opening the country selector modal
 interface CountrySelectorButtonProps extends React.ComponentProps<typeof Pressable> {
@@ -29,34 +30,6 @@ function CountrySelectorButton(props: CountrySelectorButtonProps) {
     </Button>
   );
 }
-
-interface CountrySelectorModalProps extends React.ComponentProps<typeof Modal> {
-  underlineModal?: typeof Modal | null;
-  value: CountryCode | null;
-  filtredCountryCodes?: CountryCode[] | null;
-  onSelectCountry: (country: CountryCode) => void;
-}
-
-function CountrySelectorModal(props: CountrySelectorModalProps) {
-  // This would be the modal that shows the list of countries to select from
-
-  const UserModal = useMemo(() => {
-    if (props.underlineModal) {
-      return props.underlineModal;
-    }
-    return undefined;
-  }, [props.underlineModal]);
-
-  if (UserModal) {
-    return <UserModal {...props} />;
-  }
-  return (
-    <Modal {...props}>
-      <Text>Country Selector Modal</Text>
-    </Modal>
-  );
-}
-
 export interface CountrySelectorProps extends React.ComponentProps<typeof CountrySelectorButton> {
   filtedredCountryCodes?: CountryCode[] | null;
   onSelectCountry?: (country: CountryCode) => void;
@@ -67,7 +40,7 @@ export interface CountrySelectorProps extends React.ComponentProps<typeof Countr
 export function CountrySelector(props: CountrySelectorProps) {
   // Implementation for CountrySelector component
   const [internalValue, setInternalValue] = useState(props.value);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const { filtedredCountryCodes, onSelectCountry } = props;
 
   useEffect(() => {
@@ -86,11 +59,13 @@ export function CountrySelector(props: CountrySelectorProps) {
         isOpen={isOpen}
         onPress={() => setIsOpen((prev) => !prev)}
       />
-      {/*<CountrySelectorModal
+      <CountrySelectorModal
         value={internalValue}
         onSelectCountry={onSelectCountry}
-        filtredCountryCodes={filtedredCountryCodes}
-      />*/}
+        UserCountryCodes={filtedredCountryCodes}
+        isOpen={isOpen}
+        toggleModalVisablity={() => setIsOpen((prev) => !prev)}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CountryCode } from '../consts/regions';
 import { CountryId } from '../enum/CountryIds';
 import { generateCountryCodeList } from '../utils/generateCountryCodeList';
@@ -28,6 +28,7 @@ export function usePhoneFieldState({
   const [country, setCountry] = useState<CountryCode | undefined>(undefined);
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const [outcome, setOutcome] = useState<onPressReturn | undefined>(undefined);
+
   const filteredCountryCodes = useMemo(() => {
     return generateCountryCodeList(
       allowedCountryCodes ?? undefined,

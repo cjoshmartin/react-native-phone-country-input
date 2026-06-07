@@ -23,8 +23,6 @@ export interface PhoneNumberFieldProps extends React.ComponentProps<typeof TextI
 
 export function PhoneNumberField(props: PhoneNumberFieldProps) {
   const { underlineInput, ...textInputProps } = props;
-  const [internalValue, setinternalValue] = useState('');
-  const [country, setCountry] = useState<CountryCode | null>(null);
 
   const Input = useMemo(() => {
     if (!underlineInput) {
@@ -33,52 +31,6 @@ export function PhoneNumberField(props: PhoneNumberFieldProps) {
     return underlineInput;
   }, [underlineInput]);
 
-  const onChangeText = useCallback(
-    (_value: string) => {
-      const cleanedValue = _value.replace('+', ''); // remove non-digit characters
-
-      // parse the country code from the phone number and set the country state
-      let matchedCountry = matchCountryCode(filteredCountryCodes, _value);
-      console.log('matchedCountry', matchedCountry);
-      setCountry(matchedCountry || null);
-
-      if (!!matchedCountry && cleanedValue.length >= 2) {
-        // apply masking to the phone number based on the matched country code
-        const output = maskToPhoneNumber(
-          cleanedValue,
-          matchedCountry?.code.replace('+', ''),
-          matchedCountry?.mask
-        );
-        setinternalValue(output);
-        const ouputWthOutMask = output.replace(/\D/g, '');
-        console.debug(output, ouputWthOutMask);
-
-        if (textInputProps?.onInputChange) {
-          const correctLength = (matchedCountry.code + matchedCountry.mask).length;
-          textInputProps?.onInputChange({
-            countryDetails: matchedCountry || null,
-            phoneNumber: ouputWthOutMask,
-            isValid: !!matchedCountry && cleanedValue.length + 1 === correctLength,
-            correctLength,
-          });
-        }
-      } else {
-        setinternalValue(cleanedValue);
-        if (textInputProps?.onInputChange) {
-          const correctLength = ((matchedCountry?.code ?? '') + (matchedCountry?.mask ?? ''))
-            .length;
-          textInputProps.onInputChange({
-            countryDetails: matchedCountry || null,
-            phoneNumber: cleanedValue,
-            isValid: !!matchedCountry && cleanedValue.length + 1 === correctLength,
-            correctLength,
-          });
-        }
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [textInputProps.onChangeText, setinternalValue]
-  );
   return (
     <>
       <Input
