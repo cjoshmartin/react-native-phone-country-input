@@ -18,7 +18,7 @@ interface usePhoneFieldStateReturn {
   phoneNumber?: string;
   outcome?: onPressReturn;
   onChangeText: (phoneNumber: string) => void;
-  onChangeFlag: (countryCode: string) => void;
+  onChangeFlag: (newCountry: CountryCode) => void;
 }
 
 export function usePhoneFieldState({
@@ -77,6 +77,19 @@ export function usePhoneFieldState({
     [filteredCountryCodes]
   );
 
+  const onChangeFlag = useCallback((newCountry: CountryCode) => {
+    const _phoneNumber = newCountry.code.replace('+', '');
+
+    setOutcome({
+      countryDetails: newCountry,
+      phoneNumber: _phoneNumber,
+      isValid: false,
+      correctLength: (newCountry.code + newCountry.mask).length,
+    });
+    setPhoneNumber(_phoneNumber);
+    setCountry(newCountry);
+  }, []);
+
   useEffect(() => {
     // Should only run on first render
     // console.debug('usePhoneFieldState useEffect HAS RAN!', filteredCountryCodes);
@@ -94,5 +107,6 @@ export function usePhoneFieldState({
     phoneNumber,
     outcome,
     onChangeText,
+    onChangeFlag,
   };
 }

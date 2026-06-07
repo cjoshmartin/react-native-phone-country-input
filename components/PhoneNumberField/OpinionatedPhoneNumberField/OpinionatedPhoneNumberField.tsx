@@ -25,10 +25,11 @@ export function OpinionatedPhoneNumberField({
   onOutcomeChange,
   ...props
 }: OpinionatedPhoneNumberFieldProps) {
-  const { filteredCountryCodes, outcome, onChangeText, phoneNumber } = usePhoneFieldState({
-    allowedCountryCodes,
-    disallowedCountryCodes,
-  });
+  const { filteredCountryCodes, outcome, onChangeText, onChangeFlag, phoneNumber } =
+    usePhoneFieldState({
+      allowedCountryCodes,
+      disallowedCountryCodes,
+    });
 
   // const textInput = useRef(undefined);
 
@@ -47,10 +48,7 @@ export function OpinionatedPhoneNumberField({
       ]}>
       <CountrySelector
         value={outcome?.countryDetails}
-        onSelectCountry={() => {
-          // textInput?.current?.blur();
-          props!.onInputChange();
-        }}
+        onSelectCountry={onChangeFlag}
         underlineButton={underlineButton}
         underlineModal={underlineModal}
         filtedredCountryCodes={filteredCountryCodes}

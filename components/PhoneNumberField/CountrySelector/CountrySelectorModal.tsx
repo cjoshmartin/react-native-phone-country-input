@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   FlatList,
+  Pressable,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CountryCode } from '../consts/regions';
@@ -63,7 +64,11 @@ export function CountrySelectorModal(props: CountrySelectorModalProps) {
   return (
     <Modal animationType="slide" visible={props.isOpen} transparent>
       <View style={styles.overlay}>
-        <TouchableWithoutFeedback onPress={props.toggleModalVisablity}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            props.toggleModalVisablity();
+            setSearchValue('');
+          }}>
           <View style={StyleSheet.absoluteFillObject} />
         </TouchableWithoutFeedback>
         <View style={[styles.container, { height: height / 3 }]}>
@@ -80,7 +85,9 @@ export function CountrySelectorModal(props: CountrySelectorModalProps) {
                 placeholder="Country name or code"
                 style={styles.searchInput}
                 value={searchValue}
-                onChangeText={(value) => setSearchValue(value)}
+                onChangeText={(value) => {
+                  setSearchValue(value);
+                }}
               />
             </View>
           </View>
@@ -94,9 +101,15 @@ export function CountrySelectorModal(props: CountrySelectorModalProps) {
             }}
             renderItem={({ item }) => {
               return (
-                <View
+                <Pressable
+                  onPress={() => {
+                    props.onSelectCountry(item);
+                    props.toggleModalVisablity();
+                    setSearchValue('');
+                  }}
                   style={{
-                    padding: spacing[1.5],
+                    padding: spacing[3],
+                    gap: spacing[1],
                     marginHorizontal: SIDE_SCREEN_PADDING,
                     backgroundColor: colors.white,
                   }}>
@@ -113,13 +126,14 @@ export function CountrySelectorModal(props: CountrySelectorModalProps) {
                     <Text
                       style={{
                         fontSize: fontSizes.xs,
-                        color: 'grey',
-                        padding: padding[1],
+                        color: colors.gray[400],
+
+                        paddingHorizontal: padding[0.5],
                       }}>
                       {item.code} {item.mask.replace(/\#/g, '_')}
                     </Text>
                   </View>
-                </View>
+                </Pressable>
               );
             }}
           />
