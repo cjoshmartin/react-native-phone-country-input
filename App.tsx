@@ -1,5 +1,5 @@
 import { OpinionatedPhoneNumberField } from 'components/PhoneNumberField/OpinionatedPhoneNumberField/OpinionatedPhoneNumberField';
-import PhoneNumberField, { onPressReturn } from 'components/PhoneNumberField/PhoneNumberField';
+import { onPressReturn } from 'components/PhoneNumberField/PhoneNumberField';
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 
@@ -47,7 +47,7 @@ export default function App() {
   const [isFocused, setIsFocused] = React.useState(false);
 
   const onPress = (outcome: onPressReturn) => {
-    setValue(outcome.phoneNumber);
+    setValue(outcome?.phoneNumber);
     setOutcome(outcome);
   };
 
@@ -57,7 +57,7 @@ export default function App() {
         underlineInput={StyledTextInput}
         underlineButton={StyledPhoneButton}
         underlineModal={null}
-        onInputChange={onPress}
+        onOutcomeChange={onPress}
         value={value}
         style={styles.input}
         onFocus={() => setIsFocused(true)}

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Modal, Pressable } from 'react-native';
-import { PhoneNumberField, PhoneNumberFieldProps } from '../PhoneNumberField';
+import { onPressReturn, PhoneNumberField, PhoneNumberFieldProps } from '../PhoneNumberField';
 import { CountrySelector } from '../CountrySelector/CountrySelector';
 import { countryCodeList } from '../consts/regions';
 import { usePhoneFieldState } from '../hooks/UsePhoneFieldState';
@@ -13,6 +13,7 @@ interface OpinionatedPhoneNumberFieldProps extends PhoneNumberFieldProps {
   underlineModal?: typeof Modal | null;
   allowedCountryCodes?: CountryId[] | null;
   disallowedCountryCodes?: CountryId[] | null;
+  onOutcomeChange: (outcome?: onPressReturn) => void;
 }
 
 export function OpinionatedPhoneNumberField({
@@ -21,12 +22,17 @@ export function OpinionatedPhoneNumberField({
   style,
   allowedCountryCodes,
   disallowedCountryCodes,
+  onOutcomeChange,
   ...props
 }: OpinionatedPhoneNumberFieldProps) {
-  const { filteredCountryCodes } = usePhoneFieldState({
+  const { filteredCountryCodes, outcome, onChangeText, phoneNumber } = usePhoneFieldState({
     allowedCountryCodes,
     disallowedCountryCodes,
   });
+
+  useEffect(() => {
+    onOutcomeChange(outcome);
+  }, [onOutcomeChange, outcome]);
 
   return (
     <View
@@ -38,13 +44,13 @@ export function OpinionatedPhoneNumberField({
         style,
       ]}>
       <CountrySelector
-        value={null}
+        value={outcome?.countryDetails}
         onSelectCountry={props!.onInputChange}
         underlineButton={underlineButton}
         underlineModal={underlineModal}
         filtedredCountryCodes={filteredCountryCodes}
       />
-      <PhoneNumberField {...props} />
+      <PhoneNumberField {...props} value={phoneNumber} onChangeText={onChangeText} />
     </View>
   );
 }

@@ -2,8 +2,8 @@ import { countryCodeList } from '../consts/regions';
 import { CountryId } from '../enum/CountryIds';
 
 export function generateCountryCodeList(
-  allowedCountryCodes: CountryId[],
-  disallowedCountryCodes: CountryId[]
+  allowedCountryCodes?: CountryId[],
+  disallowedCountryCodes?: CountryId[]
 ) {
   return (
     countryCodeList
