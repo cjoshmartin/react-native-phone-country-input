@@ -40,7 +40,7 @@ export interface CountrySelectorProps extends React.ComponentProps<typeof Countr
 export function CountrySelector(props: CountrySelectorProps) {
   // Implementation for CountrySelector component
   const [internalValue, setInternalValue] = useState(props.value);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { filtedredCountryCodes, onSelectCountry } = props;
 
   useEffect(() => {

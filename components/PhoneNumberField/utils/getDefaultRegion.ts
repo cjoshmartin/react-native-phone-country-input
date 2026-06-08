@@ -13,3 +13,18 @@ export function getDefaultRegion(filteredCountryCodes: CountryCode[]): CountryCo
   }
   return filteredCountryCodes[0];
 }
+
+export function getDefaultRegionWithNullableState(
+  filteredCountryCodes: CountryCode[]
+): CountryCode | null {
+  const localization = getLocales();
+  // console.debug('localization', JSON.stringify(localization, null, 2));
+  const id = localization?.[0]?.regionCode;
+  if (id) {
+    const matchedCountry = filteredCountryCodes.find((country) => country.id === id);
+    if (matchedCountry) {
+      return matchedCountry;
+    }
+  }
+  return null;
+}
