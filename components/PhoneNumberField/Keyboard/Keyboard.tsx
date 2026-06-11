@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, MutableRefObject, useEffect, useMemo } from 'react';
 import { GAP, KEYBOARD_LAYOUT, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
 import KeypadRow from './KeypadRow';
 import { Pressable, View, StyleSheet, Dimensions } from 'react-native';
@@ -30,9 +30,7 @@ function Keyboard(props: KeyboardProps) {
   }, [isOpenShared, props.isOpen]);
 
   const height = useSharedValue(0);
-  const progress = useDerivedValue(() =>
-    withTiming(isOpenShared.value ? 0 : 1, { duration: 250 })
-  );
+  const progress = useDerivedValue(() => withTiming(isOpenShared.value ? 0 : 1, { duration: 250 }));
 
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: progress.value * 2 * height.value }],
@@ -44,7 +42,7 @@ function Keyboard(props: KeyboardProps) {
   }));
 
   const layout = useMemo(() => {
-    console.log('--Rerender Keyboard--');
+    console.log('-- ⚠️ Rerender Keyboard--');
     return KEYBOARD_LAYOUT.map((row, i) => {
       return <KeypadRow row={row} key={'row-' + i} onPress={props.onKeyPress} />;
     });
@@ -55,10 +53,7 @@ function Keyboard(props: KeyboardProps) {
   return (
     <Portal hostName="ipad-keyboard">
       {props.isOpen && (
-        <Pressable
-          style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]}
-          onPress={props.onClose}
-        />
+        <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]} onPress={props.onClose} />
       )}
       <Animated.View
         onLayout={(e) => {

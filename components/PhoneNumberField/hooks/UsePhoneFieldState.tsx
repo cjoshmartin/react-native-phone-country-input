@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CountryCode } from '../consts/regions';
 import { CountryId } from '../enum/CountryIds';
 import { generateCountryCodeList } from '../utils/generateCountryCodeList';
@@ -8,6 +8,9 @@ import { maskToPhoneNumber } from '../utils/maskToPhoneNumber';
 import { matchCountryCode } from '../utils/matchCountryCode';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { BACK_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
+import { NativeSyntheticEvent, TextInputSelectionChangeEventData } from 'react-native';
+import { characterDeletion } from '../utils/characterDeletion';
+import { characterInsert } from '../utils/characterInsert';
 
 interface usePhoneFieldStateParams {
   allowedCountryCodes?: CountryId[] | null;
@@ -27,6 +30,7 @@ interface usePhoneFieldStateReturn {
   isKeyboardOpen: boolean;
   openKeyboard: () => void;
   closeKeyboard: () => void;
+  onTextSelection: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
 }
 
 export function usePhoneFieldState({
@@ -36,9 +40,10 @@ export function usePhoneFieldState({
   const [country, setCountry] = useState<CountryCode | undefined>(undefined);
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const phoneNumberRef = useRef(phoneNumber);
-  phoneNumberRef.current = phoneNumber;
   const [outcome, setOutcome] = useState<onPressReturn | undefined>(undefined);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const selectionRef = useRef({ start: 0, end: 0, hasBeenSelected: false });
+
   const openKeyboard = useCallback(() => setIsKeyboardOpen(true), []);
   const closeKeyboard = useCallback(() => setIsKeyboardOpen(false), []);
 
@@ -66,6 +71,7 @@ export function usePhoneFieldState({
           matchedCountry?.mask
         );
         setPhoneNumber(output);
+        phoneNumberRef.current = output;
         const ouputWthOutMask = output.replace(/\D/g, '');
         console.debug(output, ouputWthOutMask);
 
@@ -78,6 +84,7 @@ export function usePhoneFieldState({
         });
       } else {
         setPhoneNumber(cleanedValue);
+        phoneNumberRef.current = cleanedValue;
         const correctLength = ((matchedCountry?.code ?? '') + (matchedCountry?.mask ?? '')).length;
         setOutcome({
           countryDetails: matchedCountry || null,
@@ -100,6 +107,7 @@ export function usePhoneFieldState({
       correctLength: (newCountry.code + newCountry.mask).length,
     });
     setPhoneNumber(_phoneNumber);
+    phoneNumberRef.current = _phoneNumber;
     setCountry(newCountry);
     // come back and hook up the buttons in list to this new function
     // also think about what state variables we want to use to manage this application
@@ -109,17 +117,21 @@ export function usePhoneFieldState({
   const onKeyPress = useCallback(
     (_key: KEYPAD_KEY) => {
       const current = phoneNumberRef.current;
-      const existing_number = '+' + current;
+      console.log('current Phone-number: ', current);
+      const existing_number = '+' + (current ?? '');
+      const { start: rawStart, end: rawEnd } = selectionRef.current;
+      console.log('selection: ', selectionRef.current);
 
-      if (existing_number.length > 1 && _key.main === BACK_BUTTON) {
-        onChangeText(existing_number.slice(0, -1));
-      } else if (_key.main !== BACK_BUTTON && _key.main !== GLOBE_BUTTON) {
-        onChangeText('+' + current + _key.main);
+      if (_key.main === BACK_BUTTON) {
+        const outcome = characterDeletion(existing_number, selectionRef.current);
+        onChangeText(outcome);
+      } else if (_key.main !== GLOBE_BUTTON) {
+        const outcome = characterInsert(existing_number, _key.main, rawStart, rawEnd);
+        onChangeText(outcome);
       }
     },
     [onChangeText]
   );
-
   const onCopy = useCallback(async () => {
     console.log('copying phone number: ', outcome?.phoneNumber);
     Clipboard.setString(outcome?.phoneNumber ?? '');
@@ -129,6 +141,29 @@ export function usePhoneFieldState({
     const clipBoardContents = await Clipboard.getString();
     onChangeText(clipBoardContents);
   }, [onChangeText]);
+
+  const onTextSelection = useCallback(
+    (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+      // TODO: update this function to take account that the number is masked 
+      // in the input and the selection will be off if it is between a '(', ')' or '-' and 
+      // should delete the char before on delete 
+      const prev = selectionRef.current;
+      const next = e.nativeEvent.selection;
+      console.log('Selection: ', next);
+      const wasSelected = prev.start !== prev.end;
+      const isNowCursor = next.start === next.end;
+      if (wasSelected && isNowCursor) {
+        // deselection just happened
+        console.log('Deselection...');
+        // setIsCurrentlySelected(false);
+      } else {
+        console.log('Selection...');
+        // setIsCurrentlySelected(true);
+      }
+      selectionRef.current = { ...next, hasBeenSelected: true };
+    },
+    []
+  );
 
   useEffect(() => {
     // Should only run on first render
@@ -154,5 +189,6 @@ export function usePhoneFieldState({
     isKeyboardOpen,
     openKeyboard,
     closeKeyboard,
+    onTextSelection,
   };
 }

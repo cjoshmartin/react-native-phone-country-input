@@ -1,5 +1,5 @@
-import { useMemo, useRef } from 'react';
-import { TextInput } from 'react-native';
+import { MutableRefObject, useMemo } from 'react';
+import { NativeSyntheticEvent, TextInput, TextInputSelectionChangeEventData } from 'react-native';
 
 import { CountryCode } from './consts/regions';
 
@@ -14,11 +14,11 @@ export interface PhoneNumberFieldProps extends React.ComponentProps<typeof TextI
   underlineInput?: typeof TextInput | React.ReactNode | null;
   onInputChange?: (outcome: onPressReturn) => void;
   onOpen?: () => void;
+  onTextSelection?: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
 }
 
 export function PhoneNumberField(props: PhoneNumberFieldProps) {
-  const { underlineInput, onOpen, ...textInputProps } = props;
-  const selectionRef = useRef({ start: 0, end: 0 });
+  const { underlineInput, onOpen, onTextSelection, ...textInputProps } = props;
 
   const Input = useMemo(() => {
     if (!underlineInput) {
@@ -33,7 +33,7 @@ export function PhoneNumberField(props: PhoneNumberFieldProps) {
       value={'+' + props.value}
       showSoftInputOnFocus={false}
       onPressIn={onOpen}
-      onSelectionChange={(e: unknown) => (selectionRef.current = e.nativeEvent.selection)}
+      onSelectionChange={onTextSelection}
     />
   );
 }

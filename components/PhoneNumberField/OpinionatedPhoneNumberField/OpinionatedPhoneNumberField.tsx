@@ -39,6 +39,7 @@ export function OpinionatedPhoneNumberField({
     isKeyboardOpen,
     openKeyboard,
     closeKeyboard,
+    onTextSelection,
   } = usePhoneFieldState({
     allowedCountryCodes,
     disallowedCountryCodes,
@@ -72,6 +73,7 @@ export function OpinionatedPhoneNumberField({
           value={phoneNumber}
           onChangeText={onChangeText}
           onOpen={openKeyboard}
+          onTextSelection={onTextSelection}
         />
       </View>
       <Keyboard

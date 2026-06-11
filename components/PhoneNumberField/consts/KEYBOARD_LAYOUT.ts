@@ -1,4 +1,9 @@
 import { spacing } from '../Styling/Sizing';
+export interface SELECTION_TYPE {
+  start: number;
+  end: number;
+  hasBeenSelected: boolean;
+}
 export interface KEYPAD_KEY {
   main: string;
   subtext?: string;
