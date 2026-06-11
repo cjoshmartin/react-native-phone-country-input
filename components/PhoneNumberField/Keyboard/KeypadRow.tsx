@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { KEYPAD_KEY, KEYPAD_ROW } from '../consts/KEYBOARD_LAYOUT';
+import { GAP, KEYPAD_KEY, KEYPAD_ROW } from '../consts/KEYBOARD_LAYOUT';
 import { KeypadButton } from './KeypadButton';
 import { memo, useMemo } from 'react';
 
@@ -19,6 +19,7 @@ function KeypadRow({ row, onPress }: KeypadRowProps) {
       style={{
         flex: 1,
         flexDirection: 'row',
+        gap: GAP,
       }}>
       {keyboardRow}
     </View>

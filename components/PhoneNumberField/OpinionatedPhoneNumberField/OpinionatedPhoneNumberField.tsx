@@ -27,11 +27,22 @@ export function OpinionatedPhoneNumberField({
   onOutcomeChange,
   ...props
 }: OpinionatedPhoneNumberFieldProps) {
-  const { filteredCountryCodes, outcome, onChangeText, onChangeFlag, onKeyPress, phoneNumber } =
-    usePhoneFieldState({
-      allowedCountryCodes,
-      disallowedCountryCodes,
-    });
+  const {
+    filteredCountryCodes,
+    outcome,
+    onChangeText,
+    onChangeFlag,
+    onKeyPress,
+    phoneNumber,
+    onCopy,
+    onPaste,
+    isKeyboardOpen,
+    openKeyboard,
+    closeKeyboard,
+  } = usePhoneFieldState({
+    allowedCountryCodes,
+    disallowedCountryCodes,
+  });
 
   // const textInput = useRef(undefined);
 
@@ -57,13 +68,20 @@ export function OpinionatedPhoneNumberField({
           filtedredCountryCodes={filteredCountryCodes}
         />
         <PhoneNumberField
-          // ref={textInput}
           {...props}
           value={phoneNumber}
           onChangeText={onChangeText}
+          onOpen={openKeyboard}
         />
       </View>
-      <Keyboard onKeyPress={onKeyPress} />
+      <Keyboard
+        onKeyPress={onKeyPress}
+        value={phoneNumber}
+        onCopy={onCopy}
+        onPaste={onPaste}
+        isOpen={isKeyboardOpen}
+        onClose={closeKeyboard}
+      />
     </>
   );
 }

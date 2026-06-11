@@ -6,6 +6,7 @@ import { getDefaultRegion } from '../utils/getDefaultRegion';
 import { onPressReturn } from '../PhoneNumberField';
 import { maskToPhoneNumber } from '../utils/maskToPhoneNumber';
 import { matchCountryCode } from '../utils/matchCountryCode';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { BACK_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
 
 interface usePhoneFieldStateParams {
@@ -21,6 +22,11 @@ interface usePhoneFieldStateReturn {
   onChangeText: (phoneNumber: string) => void;
   onChangeFlag: (newCountry: CountryCode) => void;
   onKeyPress: (_key: KEYPAD_KEY) => void;
+  onCopy: () => void;
+  onPaste: () => void;
+  isKeyboardOpen: boolean;
+  openKeyboard: () => void;
+  closeKeyboard: () => void;
 }
 
 export function usePhoneFieldState({
@@ -32,6 +38,9 @@ export function usePhoneFieldState({
   const phoneNumberRef = useRef(phoneNumber);
   phoneNumberRef.current = phoneNumber;
   const [outcome, setOutcome] = useState<onPressReturn | undefined>(undefined);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const openKeyboard = useCallback(() => setIsKeyboardOpen(true), []);
+  const closeKeyboard = useCallback(() => setIsKeyboardOpen(false), []);
 
   const filteredCountryCodes = useMemo(() => {
     return generateCountryCodeList(
@@ -111,6 +120,16 @@ export function usePhoneFieldState({
     [onChangeText]
   );
 
+  const onCopy = useCallback(async () => {
+    console.log('copying phone number: ', outcome?.phoneNumber);
+    Clipboard.setString(outcome?.phoneNumber ?? '');
+  }, [outcome?.phoneNumber]);
+
+  const onPaste = useCallback(async () => {
+    const clipBoardContents = await Clipboard.getString();
+    onChangeText(clipBoardContents);
+  }, [onChangeText]);
+
   useEffect(() => {
     // Should only run on first render
     // console.debug('usePhoneFieldState useEffect HAS RAN!', filteredCountryCodes);
@@ -130,5 +149,10 @@ export function usePhoneFieldState({
     onChangeText,
     onChangeFlag,
     onKeyPress,
+    onCopy,
+    onPaste,
+    isKeyboardOpen,
+    openKeyboard,
+    closeKeyboard,
   };
 }
