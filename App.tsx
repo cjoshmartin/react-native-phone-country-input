@@ -86,7 +86,7 @@ export default function App() {
 
   return (
     <PortalProvider>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <OpinionatedPhoneNumberField
           underlineInput={StyledTextInput}
           underlineButton={StyledPhoneButton}

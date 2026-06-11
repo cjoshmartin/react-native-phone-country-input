@@ -1,3 +1,4 @@
+import { spacing } from '../Styling/Sizing';
 export interface KEYPAD_KEY {
   main: string;
   subtext?: string;
@@ -8,7 +9,7 @@ export type KEYPAD_COLLECTION = KEYPAD_ROW[];
 
 export const BACK_BUTTON = '<-';
 export const GLOBE_BUTTON = '__';
-export const GAP = 'sm';
+export const GAP = spacing[1];
 
 export const KEYBOARD_LAYOUT: KEYPAD_COLLECTION = [
   [{ main: '1' }, { main: '2', subtext: 'ABC' }, { main: '3', subtext: 'DEF' }],
