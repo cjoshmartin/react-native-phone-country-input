@@ -1,16 +1,17 @@
 import { memo, useCallback, useMemo } from 'react';
-import { BACK_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
+import { BACK_BUTTON, CLEAR_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
 import KeypadButtonContainer from './KeypadButtonContainer';
 import { Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export interface KeypadButtonProps {
   currentKey: KEYPAD_KEY;
-  onPress: (_key: KEYPAD_KEY) => void;
+  onPress: (_key: KEYPAD_KEY | string) => void;
 }
 
 function KeypadButton({ currentKey, onPress }: KeypadButtonProps) {
   const handlePress = useCallback(() => onPress(currentKey), [onPress, currentKey]);
+  const handleClear = useCallback(() => onPress({ main: CLEAR_BUTTON }), [onPress]);
 
   const isBackButton = useMemo(() => currentKey.main === BACK_BUTTON, [currentKey.main]);
   const isGlobeButton = useMemo(() => currentKey.main === GLOBE_BUTTON, [currentKey.main]);
@@ -33,7 +34,7 @@ function KeypadButton({ currentKey, onPress }: KeypadButtonProps) {
         bgColor={null}
         bgPressedColor={'background-color: rgba(0, 0, 0, 0.1);'}
         onPress={handlePress}
-        onLongPress={() => handleSetValue('')}
+        onLongPress={handleClear}
         key="back-button">
         <Feather name="delete" className="text-4xl text-typography-black" />
         <Text bold className="text-typography-black">

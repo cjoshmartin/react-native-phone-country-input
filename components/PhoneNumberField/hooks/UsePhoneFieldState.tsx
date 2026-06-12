@@ -124,9 +124,16 @@ export function usePhoneFieldState({
       console.log('selection: ', selectionRef.current);
 
       if (_key.main === BACK_BUTTON) {
+        const { start, end } = selectionRef.current;
+
+        // intendedCursorPosRef.current = start !== end ? start : Math.max(1, start - 1);
+
         const outcome = characterDeletion(existing_number, selectionRef.current);
         onChangeText(outcome);
+      } else if (_key.main === CLEAR_BUTTON) {
+        onChangeText('');
       } else if (_key.main !== GLOBE_BUTTON) {
+        const { start, end } = selectionRef.current;
         const outcome = characterInsert(existing_number, _key.main, selectionRef.current);
         onChangeText(outcome);
       }

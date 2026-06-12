@@ -14,6 +14,7 @@ export type KEYPAD_COLLECTION = KEYPAD_ROW[];
 
 export const BACK_BUTTON = '<-';
 export const GLOBE_BUTTON = '__';
+export const CLEAR_BUTTON = 'clear';
 export const GAP = spacing[1];
 
 export const KEYBOARD_LAYOUT: KEYPAD_COLLECTION = [
