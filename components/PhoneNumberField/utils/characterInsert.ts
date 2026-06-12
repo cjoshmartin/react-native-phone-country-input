@@ -5,16 +5,21 @@ export function characterInsert(
   newChar: string,
   selection: SELECTION_TYPE
 ): string {
-  let outcome = '';
-  if (selection.start === selection.end && !selection.hasBeenSelected) {
-    const outcome = phoneNumber + newChar;
-    return outcome;
-  } else {
-    const startingText = phoneNumber.slice(0, selection.start);
-    const current_key = newChar;
-    const endingText = phoneNumber.slice(selection.end);
-    outcome = startingText + current_key + endingText;
-  }
+  const start = Math.max(selection.start, 1);
+  const end = Math.max(selection.end, 1);
 
-  return outcome;
+  // let outcome = '';
+
+  const isARange = start !== end;
+  if (isARange) {
+    const firstHalf = phoneNumber.slice(0, start);
+    const secondHalf = phoneNumber.slice(end + 1);
+    return firstHalf + newChar + secondHalf;
+  } else if (selection.start === 0 && !selection.hasBeenSelected) {
+    return phoneNumber + newChar;
+  } else {
+    let outcome = [...phoneNumber];
+    outcome[start + 1] = newChar;
+    return outcome.join('');
+  }
 }

@@ -20,4 +20,8 @@ describe('characterDeletion', () => {
   it('returns empty string when cursor is at 0 with no selection', () => {
     expect(characterDeletion('+1', { start: 0, end: 0, hasBeenSelected: true })).toBe('+');
   });
+
+  it('should delete at the end of the string if both start and end are zero and hasBeenSelected is false', () => {
+    expect(characterDeletion('+1312', { start: 0, end: 0, hasBeenSelected: false })).toBe('+131');
+  });
 });
