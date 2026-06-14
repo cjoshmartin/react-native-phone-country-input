@@ -3,6 +3,7 @@ export interface SELECTION_TYPE {
   start: number;
   end: number;
   hasBeenSelected: boolean;
+  hasBeenConsumed?: boolean;
 }
 export interface KEYPAD_KEY {
   main: string;

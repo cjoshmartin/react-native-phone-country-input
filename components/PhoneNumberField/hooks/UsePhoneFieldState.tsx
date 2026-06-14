@@ -7,7 +7,13 @@ import { onPressReturn } from '../PhoneNumberField';
 import { maskToPhoneNumber } from '../utils/maskToPhoneNumber';
 import { matchCountryCode } from '../utils/matchCountryCode';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { BACK_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
+import {
+  BACK_BUTTON,
+  CLEAR_BUTTON,
+  GLOBE_BUTTON,
+  KEYPAD_KEY,
+  SELECTION_TYPE,
+} from '../consts/KEYBOARD_LAYOUT';
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData } from 'react-native';
 import { characterDeletion } from '../utils/characterDeletion';
 import { characterInsert } from '../utils/characterInsert';
@@ -32,6 +38,8 @@ interface usePhoneFieldStateReturn {
   openKeyboard: () => void;
   closeKeyboard: () => void;
   onTextSelection: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
+  cursorPosition: { start: number; end: number } | undefined;
+  onClearText: () => void;
 }
 
 export function usePhoneFieldState({
@@ -43,7 +51,18 @@ export function usePhoneFieldState({
   const phoneNumberRef = useRef(phoneNumber);
   const [outcome, setOutcome] = useState<onPressReturn | undefined>(undefined);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const selectionRef = useRef({ start: 0, end: 0, hasBeenSelected: false });
+  const selectionRef = useRef<SELECTION_TYPE>({
+    start: 0,
+    end: 0,
+    hasBeenSelected: false,
+    hasBeenConsumed: true,
+  });
+  const [cursorPosition, setCursorPosition] = useState<{ start: number; end: number } | undefined>(
+    undefined
+  );
+  // Holds the desired post-edit cursor position (in D = '+' + digits space) set by onKeyPress,
+  // consumed by onChangeText once the new masked string is available.
+  const intendedCursorPosRef = useRef<number | null>(null);
 
   const openKeyboard = useCallback(() => setIsKeyboardOpen(true), []);
   const closeKeyboard = useCallback(() => setIsKeyboardOpen(false), []);
@@ -98,6 +117,19 @@ export function usePhoneFieldState({
     [filteredCountryCodes]
   );
 
+  const onClearText = useCallback(() => {
+    console.log('Refreshing....');
+    if (!outcome) {
+      console.error('Outcome is not defined, so cannot clear text');
+      return;
+    }
+    const current_outcome = outcome;
+    setPhoneNumber(current_outcome?.countryDetails?.code);
+    phoneNumberRef.current = current_outcome?.countryDetails?.code;
+
+    setOutcome({ ...current_outcome, phoneNumber: current_outcome?.countryDetails?.code ?? '' });
+  }, [outcome]);
+
   const onChangeFlag = useCallback((newCountry: CountryCode) => {
     const _phoneNumber = newCountry.code.replace('+', '');
 
@@ -121,7 +153,7 @@ export function usePhoneFieldState({
       console.log('current Phone-number: ', current);
       // Strip mask characters so digit-based positions from selectionRef align correctly
       const existing_number = '+' + (current ?? '').replace(/\D/g, '');
-      console.log('selection: ', selectionRef.current);
+      console.log('selection: ', selectionRef.current, 'Number Length: ', existing_number.length);
 
       if (_key.main === BACK_BUTTON) {
         const { start, end } = selectionRef.current;
@@ -130,12 +162,21 @@ export function usePhoneFieldState({
 
         const outcome = characterDeletion(existing_number, selectionRef.current);
         onChangeText(outcome);
+        selectionRef.current = { start: start - 1, end: start - 1, hasBeenSelected: true };
+        // if (start === end) {
+        //   setCursorPosition({ start: start - 1, end: start - 1 });
+        // }
       } else if (_key.main === CLEAR_BUTTON) {
         onChangeText('');
+        selectionRef.current = { start: 0, end: 0, hasBeenSelected: false };
       } else if (_key.main !== GLOBE_BUTTON) {
         const { start, end } = selectionRef.current;
         const outcome = characterInsert(existing_number, _key.main, selectionRef.current);
         onChangeText(outcome);
+        selectionRef.current = { start: start + 1, end: start + 1, hasBeenSelected: true };
+        // if (start === end) {
+        //   setCursorPosition({ start: start + 1, end: start + 1 });
+        // }
       }
     },
     [onChangeText]
@@ -165,7 +206,10 @@ export function usePhoneFieldState({
       const end = fromMaskedNumberToUnmaskedSelection(maskedValue, next.end);
       console.log('Selection (unmasked): ', { start, end });
 
-      selectionRef.current = { start, end, hasBeenSelected: true };
+      selectionRef.current = { start, end, hasBeenSelected: true, hasBeenConsumed: false };
+      // Keep the controlled selection prop in sync so the TextInput
+      // cursor stays where the user tapped.
+      setCursorPosition(next);
     },
     []
   );
@@ -195,5 +239,7 @@ export function usePhoneFieldState({
     openKeyboard,
     closeKeyboard,
     onTextSelection,
+    cursorPosition,
+    onClearText,
   };
 }

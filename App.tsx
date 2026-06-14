@@ -4,7 +4,8 @@ import { onPressReturn } from 'components/PhoneNumberField/PhoneNumberField';
 import { spacing, borders } from 'components/PhoneNumberField/Styling/Sizing';
 import React from 'react';
 import { PortalHost, PortalProvider } from 'react-native-teleport';
-import { SafeAreaView, View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import 'react-native-gesture-handler';
 
@@ -86,57 +87,58 @@ export default function App() {
 
   return (
     <PortalProvider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <OpinionatedPhoneNumberField
-          underlineInput={StyledTextInput}
-          underlineButton={StyledPhoneButton}
-          underlineModal={null}
-          onOutcomeChange={onPress}
-          value={value}
-          style={styles.input}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          disallowedCountryCodes={DISALLOWED_COUNTRY_CODES}
-        />
-        <View
-          style={{
-            margin: spacing[5],
-            gap: spacing[2.5],
-          }}>
-          <Text>{isFocused ? 'Input is focused' : 'Input is not focused'}</Text>
-          <Text>Outcome:{!outcome && <Text>No outcome yet</Text>}</Text>
-          {outcome && (
-            <View
-              style={{
-                marginLeft: spacing[2.5],
-                gap: spacing[1],
-              }}>
-              <Text>phoneNumber: {outcome.phoneNumber}</Text>
-              <Text>correctLength: {outcome.correctLength}</Text>
-              <Text style={{ color: outcome.isValid ? 'green' : 'red' }}>
-                isValid: {outcome.isValid.toString()}
-              </Text>
-              <Text>Country Details: {!outcome.countryDetails && <Text>None Found</Text>}</Text>
-              {outcome.countryDetails && (
-                <View style={{ marginLeft: spacing[2.5], gap: spacing[1] }}>
-                  <Text>flag: {outcome.countryDetails?.flag}</Text>
-                  <Text>name: {outcome.countryDetails?.name}</Text>
-                  <Text>code: {outcome.countryDetails?.code}</Text>
-                  <Text>id: {outcome.countryDetails?.id}</Text>
-                  <Text>mask: {outcome.countryDetails?.mask}</Text>
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-        
-        <PortalHost
-          // @ts-ignore
-          style={StyleSheet.absoluteFillObject}
-          name="ipad-keyboard"
-        />
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1 }}>
+          <OpinionatedPhoneNumberField
+            underlineInput={StyledTextInput}
+            underlineButton={StyledPhoneButton}
+            underlineModal={null}
+            onOutcomeChange={onPress}
+            value={value}
+            style={styles.input}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            disallowedCountryCodes={DISALLOWED_COUNTRY_CODES}
+          />
+          <View
+            style={{
+              margin: spacing[5],
+              gap: spacing[2.5],
+            }}>
+            <Text>{isFocused ? 'Input is focused' : 'Input is not focused'}</Text>
+            <Text>Outcome:{!outcome && <Text>No outcome yet</Text>}</Text>
+            {outcome && (
+              <View
+                style={{
+                  marginLeft: spacing[2.5],
+                  gap: spacing[1],
+                }}>
+                <Text>phoneNumber: {outcome.phoneNumber}</Text>
+                <Text>correctLength: {outcome.correctLength}</Text>
+                <Text style={{ color: outcome.isValid ? 'green' : 'red' }}>
+                  isValid: {outcome.isValid.toString()}
+                </Text>
+                <Text>Country Details: {!outcome.countryDetails && <Text>None Found</Text>}</Text>
+                {outcome.countryDetails && (
+                  <View style={{ marginLeft: spacing[2.5], gap: spacing[1] }}>
+                    <Text>flag: {outcome.countryDetails?.flag}</Text>
+                    <Text>name: {outcome.countryDetails?.name}</Text>
+                    <Text>code: {outcome.countryDetails?.code}</Text>
+                    <Text>id: {outcome.countryDetails?.id}</Text>
+                    <Text>mask: {outcome.countryDetails?.mask}</Text>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
 
+          <PortalHost
+            // @ts-ignore
+            style={StyleSheet.absoluteFillObject}
+            name="ipad-keyboard"
+          />
+        </SafeAreaView>
+      </SafeAreaProvider>
     </PortalProvider>
   );
 }

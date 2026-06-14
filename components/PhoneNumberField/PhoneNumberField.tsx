@@ -25,7 +25,8 @@ export function PhoneNumberField(props: PhoneNumberFieldProps) {
       return TextInput;
     }
     return underlineInput;
-  }, [underlineInput]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [underlineInput, props.selection]);
 
   return (
     <Input
@@ -34,6 +35,12 @@ export function PhoneNumberField(props: PhoneNumberFieldProps) {
       showSoftInputOnFocus={false}
       onPressIn={onOpen}
       onSelectionChange={onTextSelection}
+      style={[
+        props.style,
+        {
+          zIndex: 1,
+        },
+      ]}
     />
   );
 }

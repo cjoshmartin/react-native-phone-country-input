@@ -53,7 +53,10 @@ function Keyboard(props: KeyboardProps) {
   return (
     <Portal hostName="ipad-keyboard">
       {props.isOpen && (
-        <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]} onPress={props.onClose} />
+        <Pressable
+          style={[StyleSheet.absoluteFillObject, { zIndex: 0, backgroundColor: 'red' }]}
+          onPress={props.onClose}
+        />
       )}
       <Animated.View
         onLayout={(e) => {
