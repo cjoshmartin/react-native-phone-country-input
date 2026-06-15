@@ -82,10 +82,10 @@ export function usePhoneFieldState({
 
   const onChangeText = useCallback(
     (_value: string) => {
-      const cleanedValue = _value.replace('+', '').replace(/\D\s/g, '').trim(); // remove non-digit characters
+      const cleanedValue = _value.replace(/\D\s*/g, '').trim(); // remove non-digit characters
 
       // parse the country code from the phone number and set the country state
-      let matchedCountry = matchCountryCode(filteredCountryCodes, _value);
+      let matchedCountry = matchCountryCode(filteredCountryCodes, cleanedValue);
       console.log('matchedCountry', matchedCountry);
       setCountry(matchedCountry || undefined);
 
@@ -195,7 +195,7 @@ export function usePhoneFieldState({
 
   const onPaste = useCallback(async (): Promise<boolean> => {
     const clipBoardContents = (await Clipboard.getString()).trim();
-    if (!/^\+?\d+$/.test(clipBoardContents)) {
+    if (clipBoardContents.replace(/\D\s*/g, '').length < 1) {
       return false;
     }
     onChangeText(clipBoardContents);
