@@ -82,7 +82,7 @@ export function usePhoneFieldState({
 
   const onChangeText = useCallback(
     (_value: string) => {
-      const cleanedValue = _value.replace('+', ''); // remove non-digit characters
+      const cleanedValue = _value.replace(/\D\s/g, '').trim(); // remove non-digit characters
 
       // parse the country code from the phone number and set the country state
       let matchedCountry = matchCountryCode(filteredCountryCodes, _value);
@@ -201,7 +201,12 @@ export function usePhoneFieldState({
     onChangeText(clipBoardContents);
     const newMasked = '+' + (phoneNumberRef.current ?? '');
     const unmaskedEnd = (phoneNumberRef.current ?? '').replace(/\D/g, '').length;
-    selectionRef.current = { start: unmaskedEnd, end: unmaskedEnd, hasBeenSelected: true, hasBeenConsumed: false };
+    selectionRef.current = {
+      start: unmaskedEnd,
+      end: unmaskedEnd,
+      hasBeenSelected: true,
+      hasBeenConsumed: false,
+    };
     const maskedEnd = fromUnmaskedToMaskedPosition(newMasked, unmaskedEnd);
     setCursorPosition({ start: maskedEnd, end: maskedEnd });
     return true;
