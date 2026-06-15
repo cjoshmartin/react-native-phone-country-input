@@ -52,8 +52,8 @@ export function usePhoneFieldState({
   const [outcome, setOutcome] = useState<onPressReturn | undefined>(undefined);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const selectionRef = useRef<SELECTION_TYPE>({
-    start: 0,
-    end: 0,
+    start: 1,
+    end: 1,
     hasBeenSelected: false,
     hasBeenConsumed: true,
   });
@@ -162,22 +162,25 @@ export function usePhoneFieldState({
 
         const outcome = characterDeletion(existing_number, selectionRef.current);
         onChangeText(outcome);
-        selectionRef.current = { start: start - 1, end: start - 1, hasBeenSelected: true };
-        // if (start === end) {
-        //   setCursorPosition({ start: start - 1, end: start - 1 });
-        // }
+        if (start > 1) {
+          selectionRef.current = { start: start - 1, end: start - 1, hasBeenSelected: true };
+        }
+        console.log('Updated selectionRef.current: ', selectionRef.current);
       } else if (_key.main === CLEAR_BUTTON) {
         onChangeText('');
         selectionRef.current = { start: 0, end: 0, hasBeenSelected: false };
+        console.log('Updated selectionRef.current: ', selectionRef.current);
       } else if (_key.main !== GLOBE_BUTTON) {
         const { start, end } = selectionRef.current;
         const outcome = characterInsert(existing_number, _key.main, selectionRef.current);
         onChangeText(outcome);
-        selectionRef.current = { start: start + 1, end: start + 1, hasBeenSelected: true };
-        // if (start === end) {
-        //   setCursorPosition({ start: start + 1, end: start + 1 });
-        // }
+
+        if (phoneNumberRef.current && selectionRef.current.start < phoneNumberRef.current?.length) {
+          selectionRef.current = { start: start + 1, end: start + 1, hasBeenSelected: true };
+        }
       }
+
+      console.log(phoneNumberRef.current, 'Updated selectionRef.current: ', selectionRef.current);
     },
     [onChangeText]
   );
