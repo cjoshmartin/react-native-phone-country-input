@@ -6,11 +6,13 @@ import { CountrySelector } from '../CountrySelector/CountrySelector';
 import { usePhoneFieldState } from '../hooks/UsePhoneFieldState';
 import { CountryId } from '../enum/CountryIds';
 
-import Keyboard from '../Keyboard/Keyboard';
+import Keyboard, { CopySuccessModalProps, PasteErrorModalProps } from '../Keyboard/Keyboard';
 
 export interface IntlPhoneFieldProps extends PhoneNumberFieldProps {
   underlineButton?: React.ComponentType<React.ComponentProps<typeof Pressable>> | null;
   underlineModal?: React.ComponentType<React.ComponentProps<typeof Modal>> | null;
+  underlinePasteErrorModal?: React.ComponentType<PasteErrorModalProps> | null;
+  underlineCopySuccessModal?: React.ComponentType<CopySuccessModalProps> | null;
   allowedCountryCodes?: CountryId[] | null;
   disallowedCountryCodes?: CountryId[] | null;
   onOutcomeChange: (outcome?: PhoneFieldOutcome) => void;
@@ -19,6 +21,8 @@ export interface IntlPhoneFieldProps extends PhoneNumberFieldProps {
 export function IntlPhoneField({
   underlineButton,
   underlineModal,
+  underlinePasteErrorModal,
+  underlineCopySuccessModal,
   style,
   allowedCountryCodes,
   disallowedCountryCodes,
@@ -86,6 +90,8 @@ export function IntlPhoneField({
         onPaste={onPaste}
         isOpen={isKeyboardOpen}
         onClose={closeKeyboard}
+        underlinePasteErrorModal={underlinePasteErrorModal}
+        underlineCopySuccessModal={underlineCopySuccessModal}
       />
     </>
   );

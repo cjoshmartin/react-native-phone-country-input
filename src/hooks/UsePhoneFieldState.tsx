@@ -34,7 +34,7 @@ export interface usePhoneFieldStateReturn {
   onChangeFlag: (newCountry: CountryCode) => void;
   onKeyPress: (_key: KEYPAD_KEY) => void;
   onCopy: () => void;
-  onPaste: () => void;
+  onPaste: () => Promise<boolean>;
   isKeyboardOpen: boolean;
   openKeyboard: () => void;
   closeKeyboard: () => void;
@@ -44,8 +44,6 @@ export interface usePhoneFieldStateReturn {
   onTextSelection: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
   onClearText: () => void;
   cursorPosition: { start: number; end: number };
-  isPasteErrorVisible: boolean;
-  dismissPasteError: () => void;
 }
 
 export function usePhoneFieldState({
@@ -74,9 +72,6 @@ export function usePhoneFieldState({
   const [isCountrySelectorOpen, setIsCountrySelectorOpen] = useState(false);
   const openCountrySelector = useCallback(() => setIsCountrySelectorOpen(true), []);
   const closeCountrySelector = useCallback(() => setIsCountrySelectorOpen(false), []);
-
-  const [isPasteErrorVisible, setIsPasteErrorVisible] = useState(false);
-  const dismissPasteError = useCallback(() => setIsPasteErrorVisible(false), []);
 
   const filteredCountryCodes = useMemo(() => {
     return generateCountryCodeList(
@@ -198,11 +193,10 @@ export function usePhoneFieldState({
     Clipboard.setString(outcome?.phoneNumber ?? '');
   }, [outcome?.phoneNumber]);
 
-  const onPaste = useCallback(async () => {
+  const onPaste = useCallback(async (): Promise<boolean> => {
     const clipBoardContents = (await Clipboard.getString()).trim();
     if (!/^\+?\d+$/.test(clipBoardContents)) {
-      setIsPasteErrorVisible(true);
-      return;
+      return false;
     }
     onChangeText(clipBoardContents);
     const newMasked = '+' + (phoneNumberRef.current ?? '');
@@ -210,6 +204,7 @@ export function usePhoneFieldState({
     selectionRef.current = { start: unmaskedEnd, end: unmaskedEnd, hasBeenSelected: true, hasBeenConsumed: false };
     const maskedEnd = fromUnmaskedToMaskedPosition(newMasked, unmaskedEnd);
     setCursorPosition({ start: maskedEnd, end: maskedEnd });
+    return true;
   }, [onChangeText]);
 
   const onTextSelection = useCallback(
@@ -253,7 +248,5 @@ export function usePhoneFieldState({
     onTextSelection,
     onClearText,
     cursorPosition,
-    isPasteErrorVisible,
-    dismissPasteError,
   };
 }
