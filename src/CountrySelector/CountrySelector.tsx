@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CountryCode } from '../consts/regions';
 import { Modal, Pressable, Text } from 'react-native';
 import { CountrySelectorModal } from './CountrySelectorModal';
+import { Feather } from '@expo/vector-icons';
 
 // button for opening the country selector modal
 interface CountrySelectorButtonProps extends React.ComponentProps<typeof Pressable> {
@@ -25,8 +26,7 @@ function CountrySelectorButton(props: CountrySelectorButtonProps) {
     // This could be a simple button that, when pressed, opens the country selector modal
     <Button {...props}>
       <Text>{props.value ? props.value.flag : '🏴‍☠️'}</Text>
-      {/*chevron down icon */}
-      <Text>{props.isOpen ? '▲' : '▼'}</Text>
+      <Feather name={`chevron-${props.isOpen ? 'up' : 'down'}`} size={14} color="gray" />
     </Button>
   );
 }
