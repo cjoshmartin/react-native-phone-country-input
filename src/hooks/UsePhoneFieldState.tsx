@@ -44,6 +44,8 @@ export interface usePhoneFieldStateReturn {
   onTextSelection: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
   onClearText: () => void;
   cursorPosition: { start: number; end: number };
+  isPasteErrorVisible: boolean;
+  dismissPasteError: () => void;
 }
 
 export function usePhoneFieldState({
@@ -72,6 +74,9 @@ export function usePhoneFieldState({
   const [isCountrySelectorOpen, setIsCountrySelectorOpen] = useState(false);
   const openCountrySelector = useCallback(() => setIsCountrySelectorOpen(true), []);
   const closeCountrySelector = useCallback(() => setIsCountrySelectorOpen(false), []);
+
+  const [isPasteErrorVisible, setIsPasteErrorVisible] = useState(false);
+  const dismissPasteError = useCallback(() => setIsPasteErrorVisible(false), []);
 
   const filteredCountryCodes = useMemo(() => {
     return generateCountryCodeList(
@@ -185,7 +190,7 @@ export function usePhoneFieldState({
       const maskedStart = fromUnmaskedToMaskedPosition(newMasked, selectionRef.current.start);
       setCursorPosition({ start: maskedStart, end: maskedStart });
     },
-    [onChangeText]
+    [onChangeText, openCountrySelector]
   );
 
   const onCopy = useCallback(async () => {
@@ -194,8 +199,17 @@ export function usePhoneFieldState({
   }, [outcome?.phoneNumber]);
 
   const onPaste = useCallback(async () => {
-    const clipBoardContents = await Clipboard.getString();
+    const clipBoardContents = (await Clipboard.getString()).trim();
+    if (!/^\+?\d+$/.test(clipBoardContents)) {
+      setIsPasteErrorVisible(true);
+      return;
+    }
     onChangeText(clipBoardContents);
+    const newMasked = '+' + (phoneNumberRef.current ?? '');
+    const unmaskedEnd = (phoneNumberRef.current ?? '').replace(/\D/g, '').length;
+    selectionRef.current = { start: unmaskedEnd, end: unmaskedEnd, hasBeenSelected: true, hasBeenConsumed: false };
+    const maskedEnd = fromUnmaskedToMaskedPosition(newMasked, unmaskedEnd);
+    setCursorPosition({ start: maskedEnd, end: maskedEnd });
   }, [onChangeText]);
 
   const onTextSelection = useCallback(
@@ -239,5 +253,7 @@ export function usePhoneFieldState({
     onTextSelection,
     onClearText,
     cursorPosition,
+    isPasteErrorVisible,
+    dismissPasteError,
   };
 }
