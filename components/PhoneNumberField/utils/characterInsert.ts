@@ -5,21 +5,16 @@ export function characterInsert(
   newChar: string,
   selection: SELECTION_TYPE
 ): string {
-  const start = Math.max(selection.start, 1);
-  const end = Math.max(selection.end, 1);
+  const isARange = selection.start !== selection.end;
 
-  // let outcome = '';
-
-  const isARange = start !== end;
   if (isARange) {
-    const firstHalf = phoneNumber.slice(0, start);
-    const secondHalf = phoneNumber.slice(end + 1);
-    return firstHalf + newChar + secondHalf;
+    // selection.start digits are before the selection; first selected char is at index start+1
+    return phoneNumber.slice(0, selection.start + 1) + newChar + phoneNumber.slice(selection.end + 1);
   } else if (selection.start === 0 && !selection.hasBeenSelected) {
     return phoneNumber + newChar;
   } else {
-    let outcome = [...phoneNumber];
-    outcome[start + 1] = newChar;
-    return outcome.join('');
+    // cursor is after `start` digits; insert before char at index start+1; clamp to protect '+'
+    const start = Math.max(selection.start, 1);
+    return phoneNumber.slice(0, start + 1) + newChar + phoneNumber.slice(start + 1);
   }
 }
