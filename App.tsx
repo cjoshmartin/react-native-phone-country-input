@@ -1,7 +1,7 @@
-import { CountryId } from 'components/PhoneNumberField/enum/CountryIds';
-import { OpinionatedPhoneNumberField } from 'components/PhoneNumberField/OpinionatedPhoneNumberField/OpinionatedPhoneNumberField';
-import { onPressReturn } from 'components/PhoneNumberField/PhoneNumberField';
-import { spacing, borders } from 'components/PhoneNumberField/Styling/Sizing';
+import { CountryId } from 'src/enum/CountryIds';
+import { IntlPhoneField } from 'src/IntlPhoneField/IntlPhoneField';
+import { PhoneFieldOutcome } from 'src/PhoneNumberField';
+import { spacing, borders } from 'src/Styling/Sizing';
 import React from 'react';
 import { PortalHost, PortalProvider } from 'react-native-teleport';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
@@ -45,10 +45,6 @@ function StyledPhoneButton(props: React.ComponentProps<typeof Pressable>) {
   );
 }
 
-function StyledModal() {
-  return <View></View>;
-}
-
 const DISALLOWED_COUNTRY_CODES = [
   CountryId.ANTIGUA_AND_BARBUDA,
   CountryId.ANGUILLA,
@@ -77,19 +73,19 @@ const DISALLOWED_COUNTRY_CODES = [
 
 export default function App() {
   const [value, setValue] = React.useState('');
-  const [outcome, setOutcome] = React.useState<onPressReturn | null>(null);
+  const [outcome, setOutcome] = React.useState<PhoneFieldOutcome | null>(null);
   const [isFocused, setIsFocused] = React.useState(false);
 
-  const onPress = React.useCallback((outcome: onPressReturn) => {
-    setValue(outcome?.phoneNumber);
-    setOutcome(outcome);
+  const onPress = React.useCallback((outcome?: PhoneFieldOutcome) => {
+    setValue(outcome?.phoneNumber ?? '');
+    setOutcome(outcome ?? null);
   }, []);
 
   return (
     <PortalProvider>
       <SafeAreaProvider>
         <SafeAreaView style={{ flex: 1 }}>
-          <OpinionatedPhoneNumberField
+          <IntlPhoneField
             underlineInput={StyledTextInput}
             underlineButton={StyledPhoneButton}
             underlineModal={null}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Reference</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: ui-monospace, monospace; background: #09090b; padding: 32px; color: #e4e4e7; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #fafafa; }
+    .palette { display: flex; flex-direction: column; gap: 24px; }
+    .color-row { display: flex; flex-direction: column; gap: 6px; }
+    .color-name { font-size: 13px; font-weight: 600; text-transform: capitalize; color: #a1a1aa; }
+    .swatches { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
+    .swatch { border-radius: 6px; overflow: hidden; }
+    .swatch-block { height: 48px; width: 100%; outline: 1px solid rgba(255,255,255,0.06); outline-offset: -1px; }
+    .swatch-label { font-size: 10px; padding: 4px 0 2px; text-align: center; color: #71717a; }
+    .swatch-hex  { font-size: 10px; text-align: center; color: #52525b; padding-bottom: 4px; }
+    .solo-row { display: flex; gap: 12px; }
+    .solo-swatch { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .solo-block { width: 48px; height: 48px; border-radius: 8px; outline: 1px solid rgba(255,255,255,0.12); outline-offset: -1px; }
+    .solo-label { font-size: 11px; color: #71717a; }
+  </style>
+</head>
+<body>
+  <h1>Color Reference</h1>
+
+  <div class="palette">
+
+    <div class="color-row">
+      <div class="color-name">Basics</div>
+      <div class="solo-row">
+        <div class="solo-swatch">
+          <div class="solo-block" style="background:#000000;"></div>
+          <div class="solo-label">black</div>
+          <div class="solo-label">#000000</div>
+        </div>
+        <div class="solo-swatch">
+          <div class="solo-block" style="background:#ffffff;"></div>
+          <div class="solo-label">white</div>
+          <div class="solo-label">#ffffff</div>
+        </div>
+        <div class="solo-swatch">
+          <div class="solo-block" style="background:transparent; background-image: repeating-conic-gradient(#d1d5db 0% 25%, white 0% 50%) 0 / 12px 12px;"></div>
+          <div class="solo-label">transparent</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="palettes"></div>
+
+  </div>
+
+  <script>
+    const palette = {
+      slate:  ['#f8fafc','#f1f5f9','#e2e8f0','#cbd5e1','#94a3b8','#64748b','#475569','#334155','#1e293b','#0f172a','#020617'],
+      gray:   ['#f9fafb','#f3f4f6','#e5e7eb','#d1d5db','#9ca3af','#6b7280','#4b5563','#374151','#1f2937','#111827','#030712'],
+      zinc:   ['#fafafa','#f4f4f5','#e4e4e7','#d4d4d8','#a1a1aa','#71717a','#52525b','#3f3f46','#27272a','#18181b','#09090b'],
+      red:    ['#fef2f2','#fee2e2','#fecaca','#fca5a5','#f87171','#ef4444','#dc2626','#b91c1c','#991b1b','#7f1d1d','#450a0a'],
+      orange: ['#fff7ed','#ffedd5','#fed7aa','#fdba74','#fb923c','#f97316','#ea580c','#c2410c','#9a3412','#7c2d12','#431407'],
+      amber:  ['#fffbeb','#fef3c7','#fde68a','#fcd34d','#fbbf24','#f59e0b','#d97706','#b45309','#92400e','#78350f','#451a03'],
+      yellow: ['#fefce8','#fef9c3','#fef08a','#fde047','#facc15','#eab308','#ca8a04','#a16207','#854d0e','#713f12','#422006'],
+      green:  ['#f0fdf4','#dcfce7','#bbf7d0','#86efac','#4ade80','#22c55e','#16a34a','#15803d','#166534','#14532d','#052e16'],
+      teal:   ['#f0fdfa','#ccfbf1','#99f6e4','#5eead4','#2dd4bf','#14b8a6','#0d9488','#0f766e','#115e59','#134e4a','#042f2e'],
+      blue:   ['#eff6ff','#dbeafe','#bfdbfe','#93c5fd','#60a5fa','#3b82f6','#2563eb','#1d4ed8','#1e40af','#1e3a8a','#172554'],
+      indigo: ['#eef2ff','#e0e7ff','#c7d2fe','#a5b4fc','#818cf8','#6366f1','#4f46e5','#4338ca','#3730a3','#312e81','#1e1b4b'],
+      violet: ['#f5f3ff','#ede9fe','#ddd6fe','#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95','#2e1065'],
+      pink:   ['#fdf2f8','#fce7f3','#fbcfe8','#f9a8d4','#f472b6','#ec4899','#db2777','#be185d','#9d174d','#831843','#500724'],
+      rose:   ['#fff1f2','#ffe4e6','#fecdd3','#fda4af','#fb7185','#f43f5e','#e11d48','#be123c','#9f1239','#881337','#4c0519'],
+    }
+
+    const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+
+    const container = document.getElementById('palettes')
+
+    for (const [name, hexes] of Object.entries(palette)) {
+      const row = document.createElement('div')
+      row.className = 'color-row'
+
+      const label = document.createElement('div')
+      label.className = 'color-name'
+      label.textContent = name
+
+      const swatches = document.createElement('div')
+      swatches.className = 'swatches'
+
+      hexes.forEach((hex, i) => {
+        const swatch = document.createElement('div')
+        swatch.className = 'swatch'
+        swatch.innerHTML = `
+          <div class="swatch-block" style="background:${hex};"></div>
+          <div class="swatch-label">${shades[i]}</div>
+          <div class="swatch-hex">${hex}</div>
+        `
+        swatches.appendChild(swatch)
+      })
+
+      row.appendChild(label)
+      row.appendChild(swatches)
+      container.appendChild(row)
+    }
+  </script>
+</body>
+</html>

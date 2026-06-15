@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "lib",
+    "example",
+    "components",
+    "App.tsx",
+    "screens",
+    "navigation",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

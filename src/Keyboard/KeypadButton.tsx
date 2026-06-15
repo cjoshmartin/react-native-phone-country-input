@@ -1,0 +1,54 @@
+import { memo, useCallback, useMemo } from 'react';
+import { BACK_BUTTON, CLEAR_BUTTON, GLOBE_BUTTON, KEYPAD_KEY } from '../consts/KEYBOARD_LAYOUT';
+import KeypadButtonContainer from './KeypadButtonContainer';
+import { Text } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+
+export interface KeypadButtonProps {
+  currentKey: KEYPAD_KEY;
+  onPress: (_key: KEYPAD_KEY) => void;
+}
+
+function KeypadButton({ currentKey, onPress }: KeypadButtonProps) {
+  const handlePress = useCallback(() => onPress(currentKey), [onPress, currentKey]);
+  const handleClear = useCallback(() => onPress({ main: CLEAR_BUTTON }), [onPress]);
+
+  const isBackButton = useMemo(() => currentKey.main === BACK_BUTTON, [currentKey.main]);
+  const isGlobeButton = useMemo(() => currentKey.main === GLOBE_BUTTON, [currentKey.main]);
+
+  if (isGlobeButton) {
+    return (
+      <KeypadButtonContainer
+        bgColor={null}
+        bgPressedColor={'background-color: rgba(0, 0, 0, 0.1);'}
+        onPress={handlePress}
+        key="country-button">
+        <Feather name="globe" size={24} />
+      </KeypadButtonContainer>
+    );
+  }
+
+  if (isBackButton) {
+    return (
+      <KeypadButtonContainer
+        bgColor={null}
+        bgPressedColor={'background-color: rgba(0, 0, 0, 0.1);'}
+        onPress={handlePress}
+        onLongPress={handleClear}
+        key="back-button">
+        <Feather name="delete" size={24} />
+        <Text style={{ fontWeight: 'bold' }}>clear</Text>
+      </KeypadButtonContainer>
+    );
+  }
+
+  return (
+    <KeypadButtonContainer onPress={handlePress}>
+      <Text style={{}}>{currentKey.main}</Text>
+      {(currentKey?.subtext ?? '').length > 0 && <Text>{currentKey.subtext}</Text>}
+    </KeypadButtonContainer>
+  );
+}
+
+export { KeypadButton };
+export default memo(KeypadButton);
