@@ -470,3 +470,8 @@ npm start        # starts the Expo dev server
 npm run build    # compiles the library to lib/
 npm test         # runs the unit test suite
 ```
+
+## Inspired by
+
+- [react-international-phone](https://github.com/ybrusentsov/react-international-phone)
+- [react-native-phone-entry](https://github.com/anday013/react-native-phone-entry)
