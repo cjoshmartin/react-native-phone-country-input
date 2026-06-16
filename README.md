@@ -17,7 +17,7 @@ An international phone number input for React Native with country selection, per
 - Fully customizable: swap in your own `TextInput`, `Pressable`, `Modal`, or feedback modals
 - Full TypeScript support
 
-Tested: 
+Tested on: 
 - Xiaomi Redmi Pad 2 9.7 (Android Tablet)
 - Galaxy A06 5G (Android Phone)
 - iPhone 16 Plus
