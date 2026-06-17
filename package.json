@@ -1,6 +1,6 @@
 {
   "name": "react-native-phone-country-input",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "International phone number input for React Native with country selection, masking, and a custom keyboard",
   "repository": {
     "type": "git",
