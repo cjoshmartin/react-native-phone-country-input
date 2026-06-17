@@ -16,6 +16,7 @@ export default function KeypadButtonContainer({
   shouldDisableShadow,
   bgColor = colors.white,
   bgPressedColor = colors.gray[300],
+  onPress,
   ...props
 }: KeypadButtonContainerProps) {
   const [isCurrentlyPressed, setIsCurrentlyPressed] = useState(false);
@@ -26,6 +27,8 @@ export default function KeypadButtonContainer({
       unstable_pressDelay={0}
       onPressIn={() => {
         setIsCurrentlyPressed(true);
+        //@ts-ignore
+        onPress?.();
       }}
       onPressOut={() => {
         setIsCurrentlyPressed(false);
@@ -41,7 +44,7 @@ export default function KeypadButtonContainer({
             shadowOpacity: 0.25,
             shadowRadius: 2,
             elevation: 2,
-          }
+          },
         ]}>
         {children}
       </View>

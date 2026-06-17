@@ -5,18 +5,18 @@ export function maskToPhoneNumber(rawInput: string, countryCode: string, mask: s
   let maskedPart = '';
 
   for (const char of mask) {
-    console.debug(
-      'char',
-      char,
-      'digitIndex',
-      digitIndex,
-      'restOfNumber',
-      restOfNumber,
-      'restOfNumber[digitIndex]',
-      restOfNumber[digitIndex],
-      'Output',
-      maskedPart
-    );
+    // console.debug(
+    //   'char',
+    //   char,
+    //   'digitIndex',
+    //   digitIndex,
+    //   'restOfNumber',
+    //   restOfNumber,
+    //   'restOfNumber[digitIndex]',
+    //   restOfNumber[digitIndex],
+    //   'Output',
+    //   maskedPart
+    // );
 
     if (digitIndex >= restOfNumber.length) break;
     if (char === '#') {

@@ -16,10 +16,10 @@ interface CountrySelectorButtonProps extends React.ComponentProps<typeof Pressab
 function CountrySelectorButton(props: CountrySelectorButtonProps) {
   const Button = useMemo(() => {
     if (props.underlineButton) {
-      console.debug('Using custom button for CountrySelectorButton');
+      // console.debug('Using custom button for CountrySelectorButton');
       return props.underlineButton;
     }
-    console.debug('Using default Pressable for CountrySelectorButton');
+    // console.debug('Using default Pressable for CountrySelectorButton');
     return Pressable;
   }, [props.underlineButton]);
   return (

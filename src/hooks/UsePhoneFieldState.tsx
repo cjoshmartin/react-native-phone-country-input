@@ -86,7 +86,7 @@ export function usePhoneFieldState({
 
       // parse the country code from the phone number and set the country state
       let matchedCountry = matchCountryCode(filteredCountryCodes, cleanedValue);
-      console.debug('matchedCountry', matchedCountry);
+      // console.debug('matchedCountry', matchedCountry);
       setCountry(matchedCountry || undefined);
 
       if (!!matchedCountry && cleanedValue.length >= 2) {
@@ -99,7 +99,7 @@ export function usePhoneFieldState({
         setPhoneNumber(output);
         phoneNumberRef.current = output;
         const ouputWthOutMask = output.replace(/\D/g, '');
-        console.debug(output, ouputWthOutMask);
+        // console.debug(output, ouputWthOutMask);
 
         const correctLength = (matchedCountry.code + matchedCountry.mask).length;
         const expectedDigitCount =
@@ -127,7 +127,7 @@ export function usePhoneFieldState({
   );
 
   const onClearText = useCallback(() => {
-    console.debug('Refreshing....');
+    // console.debug('Refreshing....');
     if (!outcome) {
       console.error('Outcome is not defined, so cannot clear text');
       return;
@@ -200,7 +200,7 @@ export function usePhoneFieldState({
   );
 
   const onCopy = useCallback(async () => {
-    console.debug('copying phone number: ', outcome?.phoneNumber);
+    // console.debug('copying phone number: ', outcome?.phoneNumber);
     Clipboard.setString(outcome?.phoneNumber ?? '');
   }, [outcome?.phoneNumber]);
 
@@ -238,7 +238,7 @@ export function usePhoneFieldState({
 
   useEffect(() => {
     const defaultRegion = getDefaultRegion(filteredCountryCodes);
-    console.debug(defaultRegion);
+    // console.debug(defaultRegion);
     setCountry(defaultRegion);
     onChangeText(defaultRegion?.code ?? ''); // set the default country code in the input field on load
 
