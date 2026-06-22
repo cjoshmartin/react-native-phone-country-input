@@ -27,7 +27,11 @@ export default function KeyboardToolbar({ onClose, value, onCopy, onPaste }: Key
           <Feather name="clipboard" size={20} color="#000" />
         </Pressable>
       </View>
-      <Pressable onPress={onClose}>
+      <Pressable
+        onPress={onClose}
+        style={{
+          padding: 16,
+        }}>
         <Text style={styles.doneText}>Done</Text>
       </Pressable>
     </View>
