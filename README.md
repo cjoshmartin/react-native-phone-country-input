@@ -2,12 +2,12 @@
 
 ![shows changing the phone number country code](./readme_assets/fast_changing_country_code.gif)
 
+An international phone number input for React Native with country selection, per-country number masking, and a custom keyboard that avoids the native soft keyboard. Ideal for quick changing country codes, entering phone numbers or using bigger devices like tablets that do not have native support for phone number keyboards.
+
 [![npm version](https://img.shields.io/npm/v/react-native-phone-country-input.svg)](https://www.npmjs.com/package/react-native-phone-country-input)
 [![npm downloads](https://img.shields.io/npm/dw/react-native-phone-country-input.svg)](https://www.npmjs.com/package/react-native-phone-country-input)
 [![GitHub stars](https://img.shields.io/github/stars/cjoshmartin/react-native-phone-country-input.svg?style=social)](https://github.com/cjoshmartin/react-native-phone-country-input)
 [![MIT License](https://img.shields.io/npm/l/react-native-phone-country-input.svg)](./LICENSE)
-
-An international phone number input for React Native with country selection, per-country number masking, and a custom keyboard that avoids the native soft keyboard. Ideal for quick changing country codes, entering phone numbers or using bigger devices like tablets that do not have native support for phone number keyboards.
 
 ## Peer dependencies
 
