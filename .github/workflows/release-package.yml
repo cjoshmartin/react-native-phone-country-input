@@ -1,8 +1,7 @@
 name: Release NPM Package
 
 on:
-  release:
-    types: [created]
+  push:
 
 jobs:
   version:
