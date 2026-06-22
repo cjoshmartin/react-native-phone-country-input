@@ -4,6 +4,28 @@
 
 An international phone number input for React Native with country selection, per-country number masking, and a custom keyboard that avoids the native soft keyboard. Ideal for quick changing country codes, entering phone numbers or using bigger devices like tablets that do not have native support for phone number keyboards.
 
+## Peer dependencies
+
+Install these if they are not already in your project:
+
+```sh
+npm install \
+  react-native-reanimated \
+  react-native-gesture-handler \
+  react-native-teleport \
+  expo-localization \
+  @react-native-async-storage/async-storage \
+  @react-native-clipboard/clipboard
+```
+
+Follow each library's setup guide for any native configuration required.
+
+## Installation
+
+```sh
+npm install react-native-phone-country-input
+```
+
 ## Features
 
 - 270+ countries with flags, calling codes, and phone masks
@@ -41,28 +63,6 @@ Tested on:
 #### Keyboard on iPad 
 ![](./readme_assets/ipad-l.gif)
 ![](./readme_assets/ipad-p.gif)
-
-## Peer dependencies
-
-Install these if they are not already in your project:
-
-```sh
-npm install \
-  react-native-reanimated \
-  react-native-gesture-handler \
-  react-native-teleport \
-  expo-localization \
-  @react-native-async-storage/async-storage \
-  @react-native-clipboard/clipboard
-```
-
-Follow each library's setup guide for any native configuration required.
-
-## Installation
-
-```sh
-npm install react-native-phone-country-input
-```
 
 ## Setup
 
